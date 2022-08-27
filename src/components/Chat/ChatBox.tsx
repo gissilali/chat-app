@@ -17,7 +17,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import Message from "./Message/Message";
+import LoginForm from "./LoginForm";
+import Message from "./Message";
 
 type Props = {};
 
@@ -31,14 +32,15 @@ export default function ChatBox({}: Props) {
           bottom={"100px"}
           right={"20px"}
           minH={"250px"}
-          maxH={"704px"}
+          maxH={"100%"}
+          display={"flex"}
+          flexDir={"column"}
           w={"376px"}
           boxShadow="lg"
           rounded={"2xl"}
           overflow="hidden"
         >
           <Box
-            position={"sticky"}
             py={"10px"}
             px={"10px"}
             background={"blue.500"}
@@ -78,12 +80,13 @@ export default function ChatBox({}: Props) {
             </Box>
           </Box>
 
-          <Box overflow={"auto"} maxH="480px">
-            <Message isIncoming />
-            <Message isIncoming />
-            <Message />
-            <Message isIncoming />
-            <Message />
+          <Box overflow={"hidden scroll"} maxH="480px">
+            <Message isIncoming message="Hello" />
+            <Message isIncoming message="Are you there?" />
+
+            <Message message="It's funny how, lorem, ipsum dolor sit amet consectetur adipisicing elit. Quae laboriosam labore magnam?" />
+            <Message isIncoming message="Oh that's what you think?" />
+            <Message message="Yeah, ho." />
           </Box>
           <Box
             display={"flex"}
