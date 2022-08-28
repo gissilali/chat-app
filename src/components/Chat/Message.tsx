@@ -1,11 +1,13 @@
 import { Box, Text } from "@chakra-ui/react";
-import LoginForm from "./LoginForm";
 import SpeechBubble from "./SpeechBubble";
 export type MessageProps = {
   isIncoming?: Boolean;
   isLoginPrompt?: Boolean;
   message: string;
 };
+import { lazy } from "react";
+
+const LoginForm = lazy(() => import("./LoginForm"));
 
 export default function Message({
   isIncoming,

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { stat } from "fs";
 import { GroupChat } from "../../data/Interfaces";
 
 const initialMessages = localStorage.getItem("messages");
