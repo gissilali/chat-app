@@ -23,9 +23,9 @@ import { FormEvent, useState } from "react";
 import useChatScroll from "../../hooks/useChatScroll";
 import { lazy } from "react";
 import ChatHeader from "./ChatHeader";
+import ChatForm from "./ChatForm";
 const ChatEmptyState = lazy(() => import("./ChatEmptyState"));
 const Message = lazy(() => import("./Message"));
-const ChatForm = lazy(() => import("./ChatForm"));
 
 type Props = {};
 
@@ -36,8 +36,6 @@ export default function ChatBox({}: Props) {
   );
 
   const chatRef = useChatScroll([messages, currentUser]);
-
-  const dispatch = useDispatch();
 
   return (
     <>
