@@ -85,7 +85,7 @@ export default function ChatBox({}: Props) {
           </Box>
 
           <Box
-            ref={chatRef}
+            ref={chatRef as React.LegacyRef<HTMLDivElement> | undefined}
             overflow={"hidden scroll"}
             minH="200px"
             maxH="480px"
