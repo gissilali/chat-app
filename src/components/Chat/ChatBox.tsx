@@ -1,9 +1,8 @@
 import {
-  ArrowLeftIcon,
   ArrowRightIcon,
   ChatIcon,
   ChevronLeftIcon,
-  Icon,
+  CloseIcon,
 } from "@chakra-ui/icons";
 import {
   Avatar,
@@ -13,18 +12,29 @@ import {
   Fade,
   IconButton,
   Input,
-  ScaleFade,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { User } from "../../data/Interfaces";
-import LoginForm from "./LoginForm";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../data/Interfaces";
+import ChatEmptyState from "./ChatEmptyState";
 import Message from "./Message";
+import { addMessage, addCurrentUser } from "../../store/features/chatSlice";
+import { FormEvent, useState } from "react";
+import * as dayjs from "dayjs";
+import useChatScroll from "../../hooks/useChatScroll";
 
 type Props = {};
 
 export default function ChatBox({}: Props) {
-  const { isOpen, onToggle } = useDisclosure();
+  const [message, setMessage] = useState("");
+  const { isOpen, onToggle } = useDisclosure({ isOpen: true });
+  const { currentUser, messages, users } = useSelector(
+    (store: RootState) => store.chat
+  );
+
+  const chatRef = useChatScroll([messages, currentUser]);
+
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -50,61 +60,92 @@ export default function ChatBox({}: Props) {
             justifyContent={"space-between"}
             alignItems={"center"}
           >
-            <Box display={"flex"}>
-              <IconButton
-                fontSize={"32px"}
-                background={"transparent"}
-                size="lg"
-                color={"blue.900"}
-                _hover={{ bg: "blue.600", color: "white" }}
-                aria-label="Search database"
-                icon={<ChevronLeftIcon />}
-              ></IconButton>
-              <AvatarGroup size="sm" max={2} ml={"10px"}>
-                <Avatar
-                  name="Ryan Florence"
-                  src="https://bit.ly/ryan-florence"
-                />
-                <Avatar
-                  name="Segun Adebayo"
-                  src="https://bit.ly/sage-adebayo"
-                />
-                <Avatar name="Kent Dodds" src="https://bit.ly/kent-c-dodds" />
-                <Avatar
-                  name="Prosper Otemuyiwa"
-                  src="https://bit.ly/prosper-baba"
-                />
-                <Avatar
-                  name="Christian Nwamba"
-                  src="https://bit.ly/code-beast"
-                />
-              </AvatarGroup>
+            <Box>
+              <Box alignItems={"center"} display={"flex"}>
+                <IconButton
+                  onClick={() => dispatch(addCurrentUser(null))}
+                  fontSize={"32px"}
+                  background={"transparent"}
+                  size="lg"
+                  color={"blue.900"}
+                  _hover={{ bg: "blue.600", color: "white" }}
+                  aria-label="Search database"
+                  icon={<ChevronLeftIcon />}
+                ></IconButton>
+                {currentUser ? (
+                  <Avatar size="sm" name={currentUser.username} />
+                ) : null}
+              </Box>
             </Box>
+            <AvatarGroup size="sm" max={4} ml={"10px"}>
+              {users.map((user) => (
+                <Avatar key={user.id} name={user.username} />
+              ))}
+            </AvatarGroup>
           </Box>
 
-          <Box overflow={"hidden scroll"} maxH="480px">
-            <Message isIncoming message="Hello" />
-            <Message isIncoming message="Are you there?" />
-
-            <Message message="It's funny how, lorem, ipsum dolor sit amet consectetur adipisicing elit. Quae laboriosam labore magnam?" />
-            <Message isIncoming message="Oh that's what you think?" />
-            <Message message="Yeah, ho." />
-          </Box>
           <Box
-            display={"flex"}
-            justifyContent={"space-between"}
-            p="20px"
-            borderTop={"1px"}
-            borderColor={"gray.300"}
+            ref={chatRef}
+            overflow={"hidden scroll"}
+            minH="200px"
+            maxH="480px"
           >
-            <Input flexGrow={"1"} placeholder="Start a new message" />
-            <IconButton
-              color={"gray.700"}
-              ml={"8px"}
-              aria-label=""
-              icon={<ArrowRightIcon />}
-            ></IconButton>
+            {currentUser ? (
+              <>
+                {messages.length > 0 ? (
+                  messages.map((message, index) => (
+                    <Message
+                      key={index}
+                      isIncoming={currentUser.id !== message.userId}
+                      message={message.text}
+                    />
+                  ))
+                ) : (
+                  <ChatEmptyState message="No messages in chat" />
+                )}
+              </>
+            ) : (
+              <Message message="Enter your username" isLoginPrompt={true} />
+            )}
           </Box>
+          {currentUser ? (
+            <form
+              onSubmit={(e: FormEvent) => {
+                e.preventDefault();
+                dispatch(
+                  addMessage({
+                    text: message,
+                    dateSent: dayjs().format().toString(),
+                    userId: currentUser?.id || "",
+                  })
+                );
+
+                setMessage("");
+              }}
+            >
+              <Box
+                display={"flex"}
+                justifyContent={"space-between"}
+                p="20px"
+                borderTop={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Input
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  flexGrow={"1"}
+                  placeholder="Start a new message"
+                />
+                <IconButton
+                  type="submit"
+                  color={"gray.700"}
+                  ml={"8px"}
+                  aria-label=""
+                  icon={<ArrowRightIcon />}
+                ></IconButton>
+              </Box>
+            </form>
+          ) : null}
         </Box>
       </Fade>
 
@@ -118,7 +159,7 @@ export default function ChatBox({}: Props) {
         h={"60px"}
         rounded={"full"}
       >
-        <ChatIcon />
+        {isOpen ? <CloseIcon /> : <ChatIcon />}
       </Button>
     </>
   );
