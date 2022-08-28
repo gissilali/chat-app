@@ -22,7 +22,7 @@ export default function Message({
     >
       <Box maxW={"75%"}>
         {isLoginPrompt ? (
-          <LoginForm />
+          <LoginForm message={message} />
         ) : (
           <SpeechBubble message={message} isIncoming={isIncoming} />
         )}

@@ -1,7 +1,5 @@
-import { ChatIcon } from "@chakra-ui/icons";
-import { Box, Button, Container } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import ChatBox from "./components/Chat/ChatBox";
-
 function App() {
   return (
     <div
