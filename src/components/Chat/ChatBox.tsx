@@ -18,19 +18,20 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../data/Interfaces";
-import ChatEmptyState from "./ChatEmptyState";
-import Message from "./Message";
 import { addMessage, addCurrentUser } from "../../store/features/chatSlice";
 import { FormEvent, useState } from "react";
-import * as dayjs from "dayjs";
 import useChatScroll from "../../hooks/useChatScroll";
+import { lazy } from "react";
+import ChatHeader from "./ChatHeader";
+const ChatEmptyState = lazy(() => import("./ChatEmptyState"));
+const Message = lazy(() => import("./Message"));
+const ChatForm = lazy(() => import("./ChatForm"));
 
 type Props = {};
 
 export default function ChatBox({}: Props) {
-  const [message, setMessage] = useState("");
   const { isOpen, onToggle } = useDisclosure({ isOpen: true });
-  const { currentUser, messages, users } = useSelector(
+  const { currentUser, messages } = useSelector(
     (store: RootState) => store.chat
   );
 
@@ -54,50 +55,7 @@ export default function ChatBox({}: Props) {
           rounded={"2xl"}
           overflow="hidden"
         >
-          <Box
-            py={"10px"}
-            px={"10px"}
-            background={"blue.500"}
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <Box>
-              <Box alignItems={"center"} display={"flex"}>
-                <IconButton
-                  onClick={() => dispatch(addCurrentUser(null))}
-                  fontSize={"32px"}
-                  background={"transparent"}
-                  size="lg"
-                  color={"blue.900"}
-                  _hover={{ bg: "blue.600", color: "white" }}
-                  aria-label="Search database"
-                  icon={<ChevronLeftIcon />}
-                ></IconButton>
-                {currentUser ? (
-                  <Box display={"flex"} alignItems={"center"}>
-                    <Avatar size="sm" name={currentUser.username}>
-                      <AvatarBadge boxSize="1.0em" bg="green.500" />{" "}
-                    </Avatar>
-                    <Text
-                      fontSize={"sm"}
-                      ml={"8px"}
-                      fontWeight={"bold"}
-                      color={"white"}
-                    >
-                      {currentUser.username}
-                    </Text>
-                  </Box>
-                ) : null}
-              </Box>
-            </Box>
-            <AvatarGroup size="sm" max={4} ml={"10px"}>
-              {users.map((user) => (
-                <Avatar key={user.id} name={user.username} />
-              ))}
-            </AvatarGroup>
-          </Box>
-
+          <ChatHeader />
           <Box
             ref={chatRef as React.LegacyRef<HTMLDivElement> | undefined}
             overflow={"hidden scroll"}
@@ -122,44 +80,7 @@ export default function ChatBox({}: Props) {
               <Message message="Enter your username" isLoginPrompt={true} />
             )}
           </Box>
-          {currentUser ? (
-            <form
-              onSubmit={(e: FormEvent) => {
-                e.preventDefault();
-                dispatch(
-                  addMessage({
-                    text: message,
-                    dateSent: dayjs().format().toString(),
-                    userId: currentUser?.id || "",
-                  })
-                );
-
-                setMessage("");
-              }}
-            >
-              <Box
-                display={"flex"}
-                justifyContent={"space-between"}
-                p="20px"
-                borderTop={"1px"}
-                borderColor={"gray.300"}
-              >
-                <Input
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  flexGrow={"1"}
-                  placeholder="Start a new message"
-                />
-                <IconButton
-                  type="submit"
-                  color={"gray.700"}
-                  ml={"8px"}
-                  aria-label=""
-                  icon={<ArrowRightIcon />}
-                ></IconButton>
-              </Box>
-            </form>
-          ) : null}
+          {currentUser ? <ChatForm /> : null}
         </Box>
       </Fade>
 
