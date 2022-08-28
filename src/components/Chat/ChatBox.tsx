@@ -6,12 +6,14 @@ import {
 } from "@chakra-ui/icons";
 import {
   Avatar,
+  AvatarBadge,
   AvatarGroup,
   Box,
   Button,
   Fade,
   IconButton,
   Input,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -73,7 +75,19 @@ export default function ChatBox({}: Props) {
                   icon={<ChevronLeftIcon />}
                 ></IconButton>
                 {currentUser ? (
-                  <Avatar size="sm" name={currentUser.username} />
+                  <Box display={"flex"} alignItems={"center"}>
+                    <Avatar size="sm" name={currentUser.username}>
+                      <AvatarBadge boxSize="1.0em" bg="green.500" />{" "}
+                    </Avatar>
+                    <Text
+                      fontSize={"sm"}
+                      ml={"8px"}
+                      fontWeight={"bold"}
+                      color={"white"}
+                    >
+                      {currentUser.username}
+                    </Text>
+                  </Box>
                 ) : null}
               </Box>
             </Box>
