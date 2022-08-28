@@ -1,30 +1,20 @@
-import {
-  Avatar,
-  Box,
-  Center,
-  Container,
-  Flex,
-  Icon,
-  Spacer,
-  Square,
-  Text,
-} from "@chakra-ui/react";
-
+import { Container } from "@chakra-ui/react";
+import ChatBox from "./components/Chat/ChatBox";
 function App() {
   return (
-    <div className="App">
-      <Container maxW={["100%", "80%"]} centerContent>
-        <Flex width={"100%"} color="white">
-          <Box w={["100%", "30%"]}>
-            <Flex justifyContent={"space-between"}>
-              <Avatar name="Gibson Silali"></Avatar>
-            </Flex>
-          </Box>
-
-          <Box flex="1" bg="tomato">
-            <Text>Box 3</Text>
-          </Box>
-        </Flex>
+    <div
+      className="App"
+      style={{
+        position: "relative",
+      }}
+    >
+      <Container
+        background={"gray.100"}
+        position={"relative"}
+        minW={["100%"]}
+        minH={"100vh"}
+      >
+        <ChatBox />
       </Container>
     </div>
   );
