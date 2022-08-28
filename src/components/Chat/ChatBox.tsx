@@ -17,6 +17,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { User } from "../../data/Interfaces";
 import LoginForm from "./LoginForm";
 import Message from "./Message";
 
@@ -24,6 +25,7 @@ type Props = {};
 
 export default function ChatBox({}: Props) {
   const { isOpen, onToggle } = useDisclosure();
+
   return (
     <>
       <Fade in={isOpen}>
